@@ -10,7 +10,7 @@ struct clientData
     char lastName[15];    // account last name
     char firstName[10];   // account first name
     double balance;       // account balance
-};                        // end structure clientData
+}; // end structure clientData
 
 // prototypes
 unsigned int enterChoice(void);
@@ -20,6 +20,7 @@ void newRecord(FILE *fPtr);
 void deleteRecord(FILE *fPtr);
 void transferAmount(FILE *fPtr);
 void printStatement(FILE *fPtr);
+void listAllAccounts(FILE *fPtr);
 
 int main(int argc, char *argv[])
 {
@@ -34,7 +35,7 @@ int main(int argc, char *argv[])
     }
 
     // enable user to specify action
-    while ((choice = enterChoice()) != 5)
+    while ((choice = enterChoice()) != 6)
     {
         switch (choice)
         {
@@ -55,11 +56,14 @@ int main(int argc, char *argv[])
             deleteRecord(cfPtr);
             break;
         // display if user does not select valid choice
+        case 5:
+            listAllAccounts(cfPtr);
+            break;
         default:
             puts("Incorrect choice");
             break;
         } // end switch
-    }     // end while
+    } // end while
 
     fclose(cfPtr); // fclose closes the file
 } // end main
@@ -93,10 +97,10 @@ void textFile(FILE *readPtr)
                 fprintf(writePtr, "%-6d%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName,
                         client.balance);
             } // end if
-        }     // end while
+        } // end while
 
         fclose(writePtr); // fclose closes the file
-    }                     // end else
+    } // end else
 } // end function textFile
 
 // update balance in record
@@ -213,8 +217,30 @@ unsigned int enterChoice(void)
                  "2 - update an account\n"
                  "3 - add a new account\n"
                  "4 - delete an account\n"
-                 "5 - end program\n? ");
+                 "5 - list all accounts\n"
+                 "6 - end program\n? ");
 
     scanf("%u", &menuChoice); // receive choice from user
     return menuChoice;
-} // end function enterChoice 
+} // end function enterChoice
+void listAllAccounts(FILE *fPtr)
+{
+    struct clientData client = {0, "", "", 0.0};
+
+    rewind(fPtr);
+
+    printf("%-6s%-16s%-11s%10s\n",
+           "Acct", "Last Name", "First Name", "Balance");
+
+    while (fread(&client, sizeof(struct clientData), 1, fPtr) == 1)
+    {
+        if (client.acctNum != 0)
+        {
+            printf("%-6u%-16s%-11s%10.2f\n",
+                   client.acctNum,
+                   client.lastName,
+                   client.firstName,
+                   client.balance);
+        }
+    }
+}
