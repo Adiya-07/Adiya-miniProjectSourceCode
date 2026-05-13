@@ -18,6 +18,8 @@ void textFile(FILE *readPtr);
 void updateRecord(FILE *fPtr);
 void newRecord(FILE *fPtr);
 void deleteRecord(FILE *fPtr);
+void transferAmount(FILE *fPtr);
+void printStatement(FILE *fPtr);
 
 int main(int argc, char *argv[])
 {
@@ -215,4 +217,4 @@ unsigned int enterChoice(void)
 
     scanf("%u", &menuChoice); // receive choice from user
     return menuChoice;
-} // end function enterChoice
+} // end function enterChoice 
